@@ -5,12 +5,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// MODIFIKASI 1: Impor komponen Select
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const Auth = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("login");
+  
+  // MODIFIKASI 2: Tambahkan state untuk menyimpan nilai kelas
+  const [classLevel, setClassLevel] = useState("");
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,7 +33,14 @@ const Auth = () => {
     const password = formData.get("password") as string;
     const username = formData.get("username") as string;
     const fullName = formData.get("fullName") as string;
-    const classLevel = formData.get("class") as string;
+    // const classLevel = formData.get("class") as string; // MODIFIKASI 3: Hapus baris ini
+
+    // MODIFIKASI 4: Tambahkan validasi untuk state classLevel
+    if (!classLevel) {
+      toast.error("Silakan pilih kelas terlebih dahulu");
+      setLoading(false);
+      return;
+    }
 
     try {
       const { error } = await supabase.auth.signUp({
@@ -31,7 +50,7 @@ const Auth = () => {
           data: {
             username,
             full_name: fullName,
-            class: classLevel,
+            class: classLevel, // MODIFIKASI 5: Gunakan state classLevel
           },
           emailRedirectTo: `${window.location.origin}/dashboard`,
         },
@@ -40,6 +59,7 @@ const Auth = () => {
       if (error) throw error;
 
       toast.success("Akun berhasil dibuat! Silakan login.");
+      setActiveTab("login");
     } catch (error: any) {
       toast.error(error.message || "Terjadi kesalahan saat mendaftar");
     } finally {
@@ -79,7 +99,11 @@ const Auth = () => {
           EduBattle
         </h1>
 
-        <Tabs defaultValue="login" className="w-full">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="w-full"
+        >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="login">Login</TabsTrigger>
             <TabsTrigger value="signup">Daftar</TabsTrigger>
@@ -93,7 +117,7 @@ const Auth = () => {
                   id="login-email"
                   name="email"
                   type="email"
-                  placeholder="nama@email.com"
+                  placeholder="nama@gmail.com"
                   required
                 />
               </div>
@@ -138,22 +162,29 @@ const Auth = () => {
                   required
                 />
               </div>
+              
+              {/* MODIFIKASI 6: Ganti Input dengan Select */}
               <div className="space-y-2">
                 <Label htmlFor="class">Kelas</Label>
-                <Input
-                  id="class"
-                  name="class"
-                  placeholder="10, 11, atau 12"
-                  required
-                />
+                <Select value={classLevel} onValueChange={setClassLevel}>
+                  <SelectTrigger id="class" className="w-full">
+                    <SelectValue placeholder="Pilih kelas" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="11">11</SelectItem>
+                    <SelectItem value="12">12</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
+              
               <div className="space-y-2">
                 <Label htmlFor="signup-email">Email</Label>
                 <Input
                   id="signup-email"
                   name="email"
                   type="email"
-                  placeholder="nama@email.com"
+                  placeholder="nama@gmail.com"
                   required
                 />
               </div>
