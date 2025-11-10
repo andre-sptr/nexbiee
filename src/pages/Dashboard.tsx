@@ -7,9 +7,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { Trophy, Swords, BookOpen, LogOut, User } from "lucide-react";
+import { Trophy, Swords, BookOpen, LogOut, User, Users } from "lucide-react";
 import { toast } from "sonner";
 
 interface Profile {
@@ -154,7 +155,7 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Link to="/game" className="block">
             <Card className="hover:shadow-card-hover transition-all hover:-translate-y-1 cursor-pointer flex flex-col h-full">
               <CardHeader>
@@ -216,6 +217,29 @@ const Dashboard = () => {
             </Card>
           </Link>
         </div>
+
+        <Card className="max-w-md mx-auto">
+          <CardHeader className="flex flex-row items-center gap-4 space-y-0">
+            <Users className="w-6 h-6 text-muted-foreground" />
+            <div>
+              <CardTitle className="text-xl font-bold">
+                Dibuat Oleh
+              </CardTitle>
+              <CardDescription className="text-muted-foreground">
+                Tim pengembang EduBattle
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <ul className="list-disc list-inside text-muted-foreground space-y-1">
+              <li>Nafisa Aqilah</li>
+              <li>Filza Nabila</li>
+              <li>Zahra Iffatunnisa</li>
+              <li>Keyla Adhelia</li>
+              <li>Qanita Najiya</li>
+            </ul>
+          </CardContent>
+        </Card>
       </main>
     </div>
   );
